@@ -10,7 +10,7 @@ module.exports = function(wss) {
 
     ws.on("message", (data, isBinary) => {
       wss.clients.forEach((client) => {
-        if (ws !== client && client.readyState === WebSocket.OPEN)
+        if (client.readyState === WebSocket.OPEN)
           client.send(data, { binary: isBinary });
       });
     });
