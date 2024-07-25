@@ -1,4 +1,4 @@
-const messageHandler = require("./messageHandler");
+const { WebSocket } = require("ws");
 
 module.exports = function(wss) {
   wss.on("connection", (ws) => {
@@ -8,8 +8,11 @@ module.exports = function(wss) {
       console.log("Client disconnected");
     });
 
-    ws.on("message", (message) => {
-      messageHandler(ws, message);
+    ws.on("message", (data, isBinary) => {
+      wss.clients.forEach((client) => {
+        if (ws !== client && client.readyState === WebSocket.OPEN)
+          client.send(data, { binary: isBinary });
+      });
     });
   });
 };
